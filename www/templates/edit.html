@@ -1,0 +1,22 @@
+<ion-view view-title="Revisar Cita">
+    <ion-content class="listado-principal">
+        <div class="list listado">
+            <h4>Paciente:</h4>
+            <div class="item item-input">
+                <input type="text" ng-model="note.paciente">
+            </div>
+            <h4>Fecha Cita:</h4>
+            <div class="item item-input">
+                <input type="text" ng-model="note.fecha_cita">
+            </div>
+            <h4>Observaciones:</h3>
+            <div class="item item-input">
+                <textarea rows="5" ng-model="note.observaciones"></textarea>
+            </div>
+        </div>
+        <div class="padding">
+            <button class="button button-block button-positive"
+                ng-click="save()">Guardar</button>
+        </div>
+    </ion-content>
+</ion-view>

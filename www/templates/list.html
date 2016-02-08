@@ -1,0 +1,23 @@
+<ion-view view-title="Mis Citas" ng-controller="ListCtrl">
+      <ion-content class="listado-principal">
+          <ion-list show-reorder="reordering" class="listado">
+              <ion-item class="item-remove-animate item-icon-right"
+                href="#/edit/{{note.id}}" 
+                ng-repeat="note in notes track by note.id">
+                  <h1>{{note.paciente}}</h1>
+                  <h3>{{note.fecha_cita}}</h2>
+                  <p>{{note.observaciones}}</p>
+                  <i class="icon ion-arrow-right-b"></i>
+                  <ion-reorder-button class="ion-drag"
+                    on-reorder="move(note, $fromIndex, $toIndex)"></ion-reorder-button>
+                  <ion-option-button class="button-assertive icon-left ion-trash-b"
+                    ng-click="remove(note.id)">Eliminar</ion-option-button>
+              </ion-item>
+          </ion-list>
+      </ion-content>
+      <div class="bar bar-footer bar-stable">
+          <a href="#/add" class="button button-assertive icon-left ion-compose" style="background-color:rgb(249, 171, 2)">Nueva Cita</a>
+          <!-- button class="button button-light icon-left ion-shuffle"
+            ng-click="toggleReordering()">Reorder</button -->
+      </div>
+</ion-view>

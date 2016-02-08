@@ -1,0 +1,12 @@
+{
+  "name": "recetasCdi",
+  "app_id": "c4e07916",
+  "gulpStartupTasks": [
+    "sass",
+    "watch"
+  ],
+  "watchPatterns": [
+    "www/**/*",
+    "!www/lib/**/*"
+  ]
+}
