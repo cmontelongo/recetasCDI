@@ -2,16 +2,16 @@
       <ion-content class="listado-principal">
           <ion-list show-reorder="reordering" class="listado">
               <ion-item class="item-remove-animate item-icon-right"
-                href="#/edit/{{note.id}}" 
-                ng-repeat="note in notes track by note.id">
-                  <h1>{{note.paciente}}</h1>
-                  <h3>{{note.fecha_cita}}</h2>
-                  <p>{{note.observaciones}}</p>
+                href="#/edit/{{cita.id}}" 
+                ng-repeat="cita in citas track by cita.id">
+                  <h1>{{cita.nombre}}</h1>
+                  <h3>{{cita.fecha_cita}}</h2>
+                  <p>{{cita.observaciones}}</p>
                   <i class="icon ion-arrow-right-b"></i>
                   <ion-reorder-button class="ion-drag"
-                    on-reorder="move(note, $fromIndex, $toIndex)"></ion-reorder-button>
+                    on-reorder="move(cita, $fromIndex, $toIndex)"></ion-reorder-button>
                   <ion-option-button class="button-assertive icon-left ion-trash-b"
-                    ng-click="remove(note.id)">Eliminar</ion-option-button>
+                    ng-click="remove(cita.id)">Eliminar</ion-option-button>
               </ion-item>
           </ion-list>
       </ion-content>

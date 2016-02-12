@@ -1,3 +1,6 @@
+
+//------------------------------------------
+//------------------------------------------
 angular.module('mynotes.notestore', [])
     .factory('NoteStore', function() {
 

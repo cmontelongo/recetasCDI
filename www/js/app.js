@@ -1,16 +1,22 @@
 (function() {
 
-var app = angular.module('mynotes', ['ionic', 'mynotes.notestore'])
+var app = angular.module('miscitas', ['ionic', 'miscitas.user', 'miscitas.citastore', 'miscitas.citastore', 'miscitas.pacientestore'])
 
 app.config(function($stateProvider, $urlRouterProvider) {
     
+    $stateProvider.state('login', {
+        url: '/login',
+        templateUrl: 'templates/login.html',
+        controller: 'LoginCtrl'
+    });
+
     $stateProvider.state('list', {
-        url: '/list',
+        url: '/',
         templateUrl: 'templates/list.html'
     });
 
     $stateProvider.state('edit', {
-        url: '/edit/:noteId',
+        url: '/edit/:citaId',
         templateUrl: 'templates/edit.html',
         controller: 'EditCtrl'
     });
@@ -21,65 +27,112 @@ app.config(function($stateProvider, $urlRouterProvider) {
         controller: 'AddCtrl'
     });
 
-    $urlRouterProvider.otherwise('/list');
+    $urlRouterProvider.otherwise('/');
 
 });
 
-app.controller('ListCtrl', function($scope, NoteStore) {
+app.controller('LoginCtrl', function($scope, $state, $ionicHistory, User) {
 
-    $scope.reordering = false;    
-    $scope.notes = NoteStore.list();
+  $scope.credentials = {
+    user: '',
+    password: ''
+  };
 
-    $scope.remove = function(noteId) {
-        NoteStore.remove(noteId);
-    }
-
-    $scope.move = function(note, fromIndex, toIndex) {
-        NoteStore.move(note, fromIndex, toIndex);
-    }
-
-    $scope.toggleReordering = function() {
-        $scope.reordering = !$scope.reordering; 
-    }
+  $scope.login = function() {
+    User.login($scope.credentials)
+      .then(function() {
+        $ionicHistory.nextViewOptions({historyRoot: true});    
+        $state.go('list');
+      });
+  };
 
 });
 
-app.controller('EditCtrl', function($scope, $state, NoteStore) {
+app.controller('ListCtrl', function($scope, CitaStore) {
 
-    $scope.note = angular.copy(NoteStore.get($state.params.noteId));
+  function refreshCitas() {
+   CitaStore.list().then(function(citas) {
+      $scope.citas = citas;
+    });
+  }
+  refreshCitas();
+
+  $scope.remove = function(citaId) {
+    CitaStore.remove(citaId).then(refreshCitas);
+  };
+
+});
+
+app.controller('EditCtrl', function($filter, $scope, $state, CitaStore, PacienteStore) {
+
+    function refreshData() {
+      CitaStore.get($state.params.citaId)
+      .then (function(data) {
+        $scope.cita = data;
+        $scope.fecha = $scope.cita.fecha_cita;
+      });
+    }
+
+    refreshData();
+    
+        function onSuccess(date) {
+          var fecha = $filter('date')(date, "dd/MM/yyyy HH:m");
+          $scope.fecha = fecha;
+        }
+
+        function onError(error) { // Android only
+          alert('Error: ' + error);
+        }
+    $scope.showDate = function() {
+        var options = {
+          date: new Date(),
+          mode: 'datetime',
+          minuteInterval: 15,
+          is24Hour: true,
+          locale: 'es_mx'
+        };
+
+        datePicker.show(options, onSuccess, onError);
+    }
 
     $scope.save = function() {
-        NoteStore.update($scope.note);
-        $state.go('list');
+        //$scope.cita.fecha_cita = $scope.fecha;
+        CitaStore.update($scope.cita)
+        .then(function(){
+          $state.go('list');
+        });
     };
 
 });
 
-app.controller('AddCtrl', function($scope, $state, NoteStore) {
+app.controller('AddCtrl', function($scope, $state, CitaStore) {
 
-    $scope.note = {
+    $scope.cita = {
         id: new Date().getTime().toString(),
         title: '',
         description: ''
     };
 
     $scope.save = function() {
-        NoteStore.create($scope.note);
+        CitaStore.create($scope.cita);
         $state.go('list');
     };
 
 });
 
-app.run(function($ionicPlatform) {
+app.run(function($rootScope, $state, $ionicPlatform, User) {
+  $rootScope.$on('$stateChangeStart', function(event, toState) {
+
+    if (!User.isLoggedIn() && toState.name !== 'login') {
+      event.preventDefault();
+      $state.go('login');
+    }
+
+  });
+
   $ionicPlatform.ready(function() {
     if(window.cordova && window.cordova.plugins.Keyboard) {
-      // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-      // for form inputs)
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-
-      // Don't remove this line unless you know what you are doing. It stops the viewport
-      // from snapping when text inputs are focused. Ionic handles this internally for
-      // a much nicer keyboard experience.
       cordova.plugins.Keyboard.disableScroll(true);
     }
     if(window.StatusBar) {

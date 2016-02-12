@@ -3,15 +3,16 @@
         <div class="list listado">
             <h4>Paciente:</h4>
             <div class="item item-input">
-                <input type="text" ng-model="note.paciente">
+                <input type="text" ng-model="cita.nombre">
             </div>
-            <h4>Fecha Cita:</h4>
-            <div class="item item-input">
-                <input type="text" ng-model="note.fecha_cita">
-            </div>
+            <h4>Fecha Cita</h4>
+            <input type="datetime-local"
+       ng-model="cita.fecha_cita">
+            <button class="button button-block button-light"
+                ng-click="showDate()">{{fecha}}</button>
             <h4>Observaciones:</h3>
             <div class="item item-input">
-                <textarea rows="5" ng-model="note.observaciones"></textarea>
+                <textarea rows="5" ng-model="cita.observaciones"></textarea>
             </div>
         </div>
         <div class="padding">
