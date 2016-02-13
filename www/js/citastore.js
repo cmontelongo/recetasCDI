@@ -14,8 +14,6 @@ angular.module('miscitas.citastore', [])
 	    get: function(citaId) {
 	      return $http.get(apiUrl + '/cita/' + citaId)
 		      .then(function(response) {
-                  console.log("response.data=");
-                  console.log(response.data);
 		      	return response.data;
 		      });
 	    },

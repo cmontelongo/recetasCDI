@@ -2,6 +2,7 @@
 
 var app = angular.module('miscitas', ['ionic', 'miscitas.user', 'miscitas.citastore', 'miscitas.citastore', 'miscitas.pacientestore'])
 
+//---------------------------------------------------------------------
 app.config(function($stateProvider, $urlRouterProvider) {
     
     $stateProvider.state('login', {
@@ -31,6 +32,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
 
 });
 
+//---------------------------------------------------------------------
 app.controller('LoginCtrl', function($scope, $state, $ionicHistory, User) {
 
   $scope.credentials = {
@@ -48,7 +50,8 @@ app.controller('LoginCtrl', function($scope, $state, $ionicHistory, User) {
 
 });
 
-app.controller('ListCtrl', function($scope, CitaStore) {
+//---------------------------------------------------------------------
+app.controller('ListCtrl', function($scope, $ionicHistory, $state, CitaStore, User) {
 
   function refreshCitas() {
    CitaStore.list().then(function(citas) {
@@ -61,42 +64,65 @@ app.controller('ListCtrl', function($scope, CitaStore) {
     CitaStore.remove(citaId).then(refreshCitas);
   };
 
+    $scope.logout = function() {
+        User.logout();
+        $ionicHistory.nextViewOptions({historyRoot: true});    
+        $state.go('login');
+    };
+
 });
 
+//---------------------------------------------------------------------
 app.controller('EditCtrl', function($filter, $scope, $state, CitaStore, PacienteStore) {
 
-    function refreshData() {
-      CitaStore.get($state.params.citaId)
-      .then (function(data) {
-        $scope.cita = data;
-        $scope.fecha = $scope.cita.fecha_cita;
-      });
+    PacienteStore.list()
+        .then(function(pacientes){
+            $scope.pacientes = pacientes;
+    });
+
+    var refreshData = function() {
+        CitaStore.get($state.params.citaId)
+            .then (function(data) {
+                $scope.cita = data;
+                $scope.fecha = $filter('date')($scope.cita.fecha_cita, "dd/MM/yyyy HH:mm");
+                $scope.disabled = "input-disabled";
+                PacienteStore.get(data.pacienteId)
+                    .then(function(paciente){
+                        $scope.cita.paciente = paciente;
+                    });
+            });
     }
 
     refreshData();
     
-        function onSuccess(date) {
-          var fecha = $filter('date')(date, "dd/MM/yyyy HH:m");
-          $scope.fecha = fecha;
-        }
-
-        function onError(error) { // Android only
+    var onSuccess = function(date) {
+        console.log(date);
+          $scope.fecha = $filter('date')(date, "dd/MM/yyyy HH:mm");
+        };
+    var onError = function (error) { // Android only
           alert('Error: ' + error);
-        }
+        };
     $scope.showDate = function() {
+        var fechas = $scope.cita.fecha_cita.split(' ');
+        var dias = fechas[0].split("/");
+        var horas = fechas[1].split(":");
+        var fecha = new Date(dias[2],dias[1]-1,dias[0], horas[0],horas[1]);
+        console.log(new Date(dias[2],dias[1]-1,dias[0], horas[0],horas[1]));
+        console.log($scope.fecha);
+        console.log(fecha);
         var options = {
-          date: new Date(),
+          date: fecha, //new Date(),
           mode: 'datetime',
           minuteInterval: 15,
-          is24Hour: true,
-          locale: 'es_mx'
+          is24Hour: true
         };
 
         datePicker.show(options, onSuccess, onError);
     }
 
     $scope.save = function() {
-        //$scope.cita.fecha_cita = $scope.fecha;
+        $scope.cita.fecha_cita = $scope.fecha;
+        $scope.cita.pacienteId = $scope.cita.paciente.id;
         CitaStore.update($scope.cita)
         .then(function(){
           $state.go('list');
@@ -105,21 +131,48 @@ app.controller('EditCtrl', function($filter, $scope, $state, CitaStore, Paciente
 
 });
 
-app.controller('AddCtrl', function($scope, $state, CitaStore) {
+//---------------------------------------------------------------------
+app.controller('AddCtrl', function($scope, $state, $filter, CitaStore, PacienteStore) {
+    PacienteStore.list()
+        .then(function(pacientes){
+            $scope.pacientes = pacientes;
+    });
 
     $scope.cita = {
         id: new Date().getTime().toString(),
         title: '',
+        fecha_cita: new Date(),
         description: ''
     };
 
+    var onSuccess = function(date) {
+          $scope.fecha = $filter('date')(date, "dd/MM/yyyy HH:mm");
+        };
+    var onError = function (error) { // Android only
+          alert('Error: ' + error);
+        };
+    $scope.showDate = function() {
+        var fecha = $scope.fecha_cita || new Date();
+        var options = {
+          date: fecha,
+          mode: 'datetime',
+          minuteInterval: 15,
+          is24Hour: true
+        };
+
+        datePicker.show(options, onSuccess, onError);
+    }
+
     $scope.save = function() {
+        $scope.cita.fecha_cita = $scope.fecha;
+        $scope.cita.pacienteId = $scope.cita.paciente.id;
         CitaStore.create($scope.cita);
         $state.go('list');
     };
 
 });
 
+//---------------------------------------------------------------------
 app.run(function($rootScope, $state, $ionicPlatform, User) {
   $rootScope.$on('$stateChangeStart', function(event, toState) {
 

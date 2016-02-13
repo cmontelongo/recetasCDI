@@ -1,22 +1,26 @@
-<ion-view view-title="Revisar Cita">
+<ion-view view-title="Revisar Cita" cache-view="false">
     <ion-content class="listado-principal">
         <div class="list listado">
             <h4>Paciente:</h4>
-            <div class="item item-input">
-                <input type="text" ng-model="cita.nombre">
+            <!-- div class="item item-input rounded">
+                <input type="text" class="ion-input-text rounded" ng-model="cita.nombre">
+            </div-->
+            <div class="item item-input rounded">
+                <select name="paciente" id="paciente" class="ion-input-select ion-input {{disabled}}"
+                    ng-options="option.nombre for option in pacientes track by option.id"
+                    ng-model="cita.paciente"></select>
             </div>
             <h4>Fecha Cita</h4>
-            <input type="datetime-local"
-       ng-model="cita.fecha_cita">
-            <button class="button button-block button-light"
+            <!--input type="datetime" ng-model-options="{ updateOn: 'blur' }" ng-model="cita.fecha_cita"-->
+            <button class="button button-block button-light rounded ion-input"
                 ng-click="showDate()">{{fecha}}</button>
             <h4>Observaciones:</h3>
-            <div class="item item-input">
-                <textarea rows="5" ng-model="cita.observaciones"></textarea>
+            <div class="item item-input rounded">
+                <textarea rows="5" class="ion-input" ng-model="cita.observaciones"></textarea>
             </div>
         </div>
         <div class="padding">
-            <button class="button button-block button-positive"
+            <button class="button button-block button-positive rounded"
                 ng-click="save()">Guardar</button>
         </div>
     </ion-content>

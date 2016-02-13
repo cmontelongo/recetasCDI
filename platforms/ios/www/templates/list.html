@@ -1,4 +1,4 @@
-<ion-view view-title="Mis Citas" ng-controller="ListCtrl">
+<ion-view view-title="Mis Citas" ng-controller="ListCtrl" cache-view="false">
       <ion-content class="listado-principal">
           <ion-list show-reorder="reordering" class="listado">
               <ion-item class="item-remove-animate item-icon-right"
@@ -16,7 +16,10 @@
           </ion-list>
       </ion-content>
       <div class="bar bar-footer bar-stable">
-          <a href="#/add" class="button button-assertive icon-left ion-compose" style="background-color:rgb(249, 171, 2)">Nueva Cita</a>
+          <a href="#/add" class="button button-assertive icon-left ion-compose"
+             style="background-color:rgb(249, 171, 2)">Nueva Cita</a>
+          <button class="button button-assertive icon-left ion-log-out"
+            ng-click="logout()" style="background-color:rgb(249, 171, 2)"> Salir</button>
           <!-- button class="button button-light icon-left ion-shuffle"
             ng-click="toggleReordering()">Reorder</button -->
       </div>

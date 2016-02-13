@@ -1,6 +1,6 @@
-<ion-view view-title="Login">
+<ion-view view-title="Login" cache-view="false">
 	<ion-content>
-		<div class="list card">
+		<div class="list card rounded">
 			<div class="item item-input">
 				<input type="text" placeholder="Usuario"
 					ng-model="credentials.user">
@@ -11,7 +11,7 @@
 			</div>
 		</div>
 		<div class="padding">
-			<button class="button button-block button-positive"
+			<button class="button button-block button-positive rounded"
 				ng-click="login()">Login</button>
 		</div>
 	</ion-content>

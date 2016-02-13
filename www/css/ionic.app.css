@@ -9749,8 +9749,44 @@ a.button {
   border-style: solid;
   font-size: 16px; }
 
-.item-remove-animate {
-  background-color: red; }
-
 .title-white {
   color: white; }
+
+.rounded {
+  border-radius: 10px; }
+
+.input-disabled {
+  pointer-events: none; }
+
+.ion-input {
+  font-size: 1.25rem;
+  text-indent: 10px;
+  padding: .5rem 0; }
+
+.ion-input-select,
+select {
+  background-repeat: no-repeat;
+  background-color: transparent;
+  border: thin solid #dddddd;
+  font-weight: 300;
+  display: inline;
+  vertical-align: middle;
+  color: #333;
+  padding: auto 0;
+  overflow: hidden;
+  box-sizing: border-box; }
+
+.ion-input-select {
+  width: 98%;
+  font-size: 1.25rem;
+  text-indent: 10px;
+  padding: .5rem 0; }
+
+option {
+  background: #444; }
+
+select::-ms-expand {
+  display: none; }
+
+:focus {
+  outline: none; }
